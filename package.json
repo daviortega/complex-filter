@@ -1,0 +1,26 @@
+{
+  "name": "complex-filter",
+  "version": "0.1.0",
+  "description": "Funcional way to filter array of object with complex association of AND, OR and NOT.",
+  "main": "index.js",
+  "scripts": {
+    "test":  "NODE_PATH=node_modules node_modules/.bin/mocha --reporter ${MOCHA_REPORTER-spec} $(find src -name '*tests.js')",
+    "coverage": "NODE_PATH=node_modules node_modules/.bin/nyc report --reporter=text-lcov | coveralls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daviortega/complex-filter.git"
+  },
+  "author": "Davi Ortega",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/daviortega/complex-filter/issues"
+  },
+  "homepage": "https://github.com/daviortega/complex-filter#readme",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "coveralls": "^3.0.1",
+    "mocha": "^5.1.1",
+    "nyc": "^11.7.1"
+  }
+}

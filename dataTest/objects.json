@@ -1,7 +1,7 @@
 [
     {
     "date": 1180569600,
-    "NBCItaxID": 1076,
+    "NCBItaxID": 1076,
     "artNotes": "Tilt series notes: Fe-metabolizing bacterium that makes parallel membrane sheets for photosynthesis.  Membrane topology is the primary interest.\r\nKeywords: photosynthetic membrane sheets, parallel membranes\n",
     "speciesName": "Rhodopseudomonas palustris",
     "tiltSingleDual": 1,
@@ -18,7 +18,7 @@
    },
    {
     "date": 1245196800,
-    "NBCItaxID": 197,
+    "NCBItaxID": 197,
     "speciesName": "Campylobacter jejuni",
     "tiltSingleDual": 1,
     "tiltConstant": 1,
@@ -29,7 +29,7 @@
    },
    {
     "date": 1308268800,
-    "NBCItaxID": 197,
+    "NCBItaxID": 197,
     "speciesName": "Campylobacter jejuni",
     "tiltSingleDual": 1,
     "tiltConstant": 1,
@@ -40,7 +40,7 @@
    },
    {
     "date": 1180483200,
-    "NBCItaxID": 80880,
+    "NCBItaxID": 80880,
     "artNotes": "Tilt series notes: Fe-metabolizing bacterium that makes parallel membrane sheets for photosynthesis.  Membrane topology is the primary interest.\r\nKeywords: photosynthetic membrane sheets, parallel membranes\n",
     "speciesName": "Campylobacter jejuni",
     "tiltSingleDual": 1,
@@ -57,7 +57,7 @@
    },
     {
     "date": 1237939200,
-    "NBCItaxID": 80880,
+    "NCBItaxID": 80880,
     "speciesName": "Campylobacter jejuni",
     "tiltSingleDual": 1,
     "tiltConstant": 1,
@@ -68,7 +68,7 @@
     },
     {
         "date": 1237939200,
-        "NBCItaxID": 80880,
+        "NCBItaxID": 80880,
         "speciesName": "Campylobacter jejuni",
         "tiltSingleDual": 1,
         "tiltConstant": 1,
@@ -79,7 +79,7 @@
     },
     {
     "date": 1132617600,
-    "NBCItaxID": 80880,
+    "NCBItaxID": 80880,
     "artNotes": "Tilt series notes: H. neapolitanus cell h1 in normal conditions\r\nKeywords: carboxysomes, internal granules, partial carboxysomes, irregular carboxysome\n",
     "speciesName": "Halothiobacillus neapolitanus",
     "strain": "c2",
@@ -94,7 +94,7 @@
    },
    {
     "date": 1132617600,
-    "NBCItaxID": 80880,
+    "NCBItaxID": 80880,
     "artNotes": "Tilt series notes: H. neapolitanus cell h1 in normal conditions\r\nKeywords: carboxysomes, internal granules, partial carboxysomes, irregular carboxysome\n",
     "speciesName": "Halothiobacillus neapolitanus",
     "strain": "c2",
@@ -109,7 +109,7 @@
    },
    {
     "date": 1132617600,
-    "NBCItaxID": 8080,
+    "NCBItaxID": 8080,
     "artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
     "speciesName": "Halothiobacillus neapolitanus",
     "strain": "c2",
@@ -124,7 +124,7 @@
    },
    {
     "date": 1132617600,
-    "NBCItaxID": 80880,
+    "NCBItaxID": 80880,
     "artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
     "speciesName": "Halothiobacillus neapolitanus",
     "strain": "c2",
@@ -139,7 +139,7 @@
    },
    {
     "date": 1132617600,
-    "NBCItaxID": 80880,
+    "NCBItaxID": 80880,
     "artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
     "speciesName": "Halothiobacillus neapolitanus",
     "strain": "c2",
@@ -154,7 +154,7 @@
    },
    {
     "date": 1132617600,
-    "NBCItaxID": 90880,
+    "NCBItaxID": 90880,
     "artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
     "speciesName": "Pseudomonas aeruginosa",
     "strain": "c2",

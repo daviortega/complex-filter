@@ -2,63 +2,12 @@
 'use strict'
 
 const chai = require('chai')
-const path = require('path')
-const fs = require('fs')
-
 const expect = chai.expect
-const should = chai.should
+const buildFilter = require('./buildFilter')
 
-const complexFilter = require('./complexFilter')
-
-const dataTestPath = path.resolve(__dirname, '..', 'dataTest')
-const objectsFilename = path.resolve(dataTestPath, 'objects.json')
-const nestedObjectsFilename = path.resolve(dataTestPath, 'objects.nested.json')
-
-describe('complexFilter', function() {
+describe('buildFilter', function() {
 	describe('simple queries and different searchTypes', function() {
 		it('should match anywhere with "contains"', function() {
-			const expected = [
-				{
-					"date": 1180483200,
-					"NCBItaxID": 80880,
-					"artNotes": "Tilt series notes: Fe-metabolizing bacterium that makes parallel membrane sheets for photosynthesis.  Membrane topology is the primary interest.\r\nKeywords: photosynthetic membrane sheets, parallel membranes\n",
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"defocus": -10,
-					"dosage": 200,
-					"tiltConstant": 1,
-					"tiltMin": -65,
-					"tiltMax": 65,
-					"tiltStep": 1,
-					"microscopist": "Gavin Murphy",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "bt2007-05-30-1"
-				   },
-					{
-					"date": 1237939200,
-					"NCBItaxID": 80880,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Davi Ortega",
-					"institution": "ETDB",
-					"lab": "Jensen Lab",
-					"sid": "am2009-03-25-16"
-					},
-					{
-						"date": 1237939200,
-						"NCBItaxID": 80880,
-						"speciesName": "Campylobacter jejuni",
-						"tiltSingleDual": 1,
-						"tiltConstant": 1,
-						"microscopist": "Davi R. Ortega",
-						"institution": "Caltech",
-						"lab": "Jensen Lab",
-						"sid": "am2009-03-25-16"
-					}
-			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -68,24 +17,11 @@ describe('complexFilter', function() {
 					"searchType": "contains"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist.match('av')"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match exact with "exact"', function() {
-			const expected = [
-				{
-					"date": 1237939200,
-					"NCBItaxID": 80880,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Davi Ortega",
-					"institution": "ETDB",
-					"lab": "Jensen Lab",
-					"sid": "am2009-03-25-16"
-				}
-			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -95,24 +31,11 @@ describe('complexFilter', function() {
 					"searchType": "exact"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist === 'Davi Ortega'"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match at the beginning with "startsWith"', function() {
-			const expected = [
-				{
-					"date": 1237939200,
-					"NCBItaxID": 80880,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Davi Ortega",
-					"institution": "ETDB",
-					"lab": "Jensen Lab",
-					"sid": "am2009-03-25-16"
-				}
-			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -122,39 +45,11 @@ describe('complexFilter', function() {
 					"searchType": "startsWith"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
-			expect(results).eql(expected)
-		})
-		it('should not match anywhere else with "startsWith"', function() {
-			const expected = []
-			const objects = require(objectsFilename)
-			const queryStack = [
-				{
-					"type": "filter",
-					"not": false,
-					"searchFor": "avi O",
-					"searchOn": "microscopist",
-					"searchType": "startsWith"
-				}
-			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist.match('^Davi O')"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match at the end with "endsWith"', function() {
-			const expected = [
-				{
-					"date": 1237939200,
-					"NCBItaxID": 80880,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Davi Ortega",
-					"institution": "ETDB",
-					"lab": "Jensen Lab",
-					"sid": "am2009-03-25-16"
-				}
-			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -164,24 +59,11 @@ describe('complexFilter', function() {
 					"searchType": "endsWith"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist.match('i Ortega$')"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match regex with "regex"', function() {
-			const expected = [
-				{
-					"date": 1237939200,
-					"NCBItaxID": 80880,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Davi Ortega",
-					"institution": "ETDB",
-					"lab": "Jensen Lab",
-					"sid": "am2009-03-25-16"
-				}
-			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -191,35 +73,11 @@ describe('complexFilter', function() {
 					"searchType": "regex"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist.match(/^Davi Ortega$/)"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
-		it('should match regex with "regex"', function() {
-			const expected = [
-				{
-					"date": 1237939200,
-					"NCBItaxID": 80880,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Davi Ortega",
-					"institution": "ETDB",
-					"lab": "Jensen Lab",
-					"sid": "am2009-03-25-16"
-				},
-				{
-					"NCBItaxID": 80880,
-					"date": 1237939200,
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"microscopist": "Davi R. Ortega",
-					"sid": "am2009-03-25-16",
-					"speciesName": "Campylobacter jejuni",
-					"tiltConstant": 1,
-					"tiltSingleDual": 1
-				}
-			]
-			const objects = require(objectsFilename)
+		it('should match complicated regex with "regex"', function() {
 			const queryStack = [
 				{
 					"type": "filter",
@@ -229,12 +87,11 @@ describe('complexFilter', function() {
 					"searchType": "regex"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist.match(/.*av.{1}\\b/)"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
-		})		
+		})
 		it('should not match any using special regex characters in "contains"', function() {
-			const expected = []
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -244,30 +101,11 @@ describe('complexFilter', function() {
 					"searchType": "contains"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist.match('$Matt')"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match exact with "exactValue" with numbers', function() {
-			const expected = [
-				{
-					"date": 1180569600,
-					"NCBItaxID": 1076,
-					"artNotes": "Tilt series notes: Fe-metabolizing bacterium that makes parallel membrane sheets for photosynthesis.  Membrane topology is the primary interest.\r\nKeywords: photosynthetic membrane sheets, parallel membranes\n",
-					"speciesName": "Rhodopseudomonas palustris",
-					"tiltSingleDual": 1,
-					"defocus": -10,
-					"dosage": 200,
-					"tiltConstant": 1,
-					"tiltMin": -65,
-					"tiltMax": 65,
-					"tiltStep": 1,
-					"microscopist": "Bill Tivol",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "bt2007-05-31-2"
-				}
-			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -277,52 +115,11 @@ describe('complexFilter', function() {
 					"searchType": "exactValue"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.NCBItaxID === 1076"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match smaller values with "lessThan"', function() {
-			const expected = [
-				{
-					"date": 1180569600,
-					"NCBItaxID": 1076,
-					"artNotes": "Tilt series notes: Fe-metabolizing bacterium that makes parallel membrane sheets for photosynthesis.  Membrane topology is the primary interest.\r\nKeywords: photosynthetic membrane sheets, parallel membranes\n",
-					"speciesName": "Rhodopseudomonas palustris",
-					"tiltSingleDual": 1,
-					"defocus": -10,
-					"dosage": 200,
-					"tiltConstant": 1,
-					"tiltMin": -65,
-					"tiltMax": 65,
-					"tiltStep": 1,
-					"microscopist": "Bill Tivol",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "bt2007-05-31-2"
-				},
-				{
-					"date": 1245196800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2009-06-17-10"
-				},
-				{
-					"date": 1308268800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2011-06-17-1"
-				}
-			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -332,28 +129,11 @@ describe('complexFilter', function() {
 					"searchType": "lessThan"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.NCBItaxID < 1078"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match larger values with "greaterThan"', function() {
-			const expected = [
-				{
-					"date": 1132617600,
-					"NCBItaxID": 90880,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
-					"speciesName": "Pseudomonas aeruginosa",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -11,
-					"dosage": 190,
-					"tiltConstant": 1,
-					"microscopist": "Ariane Briegel",
-					"institution": "Caltech",
-					"lab": "Briegel Lab",
-					"sid": "ci2005-11-22-3"
-				}
-			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -363,28 +143,11 @@ describe('complexFilter', function() {
 					"searchType": "greaterThan"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.NCBItaxID > 90000"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match values between two values passed as "between"', function() {
-			const expected = [
-				{
-					"date": 1132617600,
-					"NCBItaxID": 8080,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
-					"speciesName": "Halothiobacillus neapolitanus",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -11,
-					"dosage": 190,
-					"tiltConstant": 1,
-					"microscopist": "Matt Swulius",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "ci2005-11-22-3"
-				}
-			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -394,7 +157,8 @@ describe('complexFilter', function() {
 					"searchType": "between"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.NCBItaxID > 5000 && item.NCBItaxID < 10000"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 	})
@@ -428,7 +192,6 @@ describe('complexFilter', function() {
 					"sid": "ci2005-11-22-3"
 				}
 			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -474,7 +237,6 @@ describe('complexFilter', function() {
 					"sid": "am2011-06-17-1"
 				}
 			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -566,7 +328,6 @@ describe('complexFilter', function() {
 					"sid": "ci2005-11-22-3"
 				   }
 			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -576,52 +337,11 @@ describe('complexFilter', function() {
 					"searchType": "exactValue"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist.match('^Davi O')"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match smaller or equal values with NOT and "greaterThan"', function() {
-			const expected = [
-				{
-					"date": 1180569600,
-					"NCBItaxID": 1076,
-					"artNotes": "Tilt series notes: Fe-metabolizing bacterium that makes parallel membrane sheets for photosynthesis.  Membrane topology is the primary interest.\r\nKeywords: photosynthetic membrane sheets, parallel membranes\n",
-					"speciesName": "Rhodopseudomonas palustris",
-					"tiltSingleDual": 1,
-					"defocus": -10,
-					"dosage": 200,
-					"tiltConstant": 1,
-					"tiltMin": -65,
-					"tiltMax": 65,
-					"tiltStep": 1,
-					"microscopist": "Bill Tivol",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "bt2007-05-31-2"
-				},
-				{
-					"date": 1245196800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2009-06-17-10"
-				},
-				{
-					"date": 1308268800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2011-06-17-1"
-				}
-			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -631,7 +351,8 @@ describe('complexFilter', function() {
 					"searchType": "greaterThan"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist.match('^Davi O')"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match larger or equal values with NOT and "lessThan', function() {
@@ -652,7 +373,6 @@ describe('complexFilter', function() {
 					"sid": "ci2005-11-22-3"
 				}
 			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -662,7 +382,8 @@ describe('complexFilter', function() {
 					"searchType": "lessThan"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist.match('^Davi O')"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match values not included between two values passed as "between"', function() {
@@ -705,7 +426,6 @@ describe('complexFilter', function() {
 					"sid": "ci2005-11-22-3"
 				}
 			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -715,7 +435,8 @@ describe('complexFilter', function() {
 					"searchType": "between"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist.match('^Davi O')"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 	})
@@ -753,7 +474,6 @@ describe('complexFilter', function() {
 					"sid": "ci2005-11-22-3"
 				}
 			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -817,7 +537,6 @@ describe('complexFilter', function() {
 					"sid": "am2009-03-25-16"
 				}
 			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "OR",
@@ -885,7 +604,6 @@ describe('complexFilter', function() {
 					"sid": "am2009-03-25-16"
 				}
 			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -974,7 +692,6 @@ describe('complexFilter', function() {
 					"sid": "am2009-03-25-16"
 				}
 			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -1029,7 +746,6 @@ describe('complexFilter', function() {
 					"sid": "am2009-03-25-16"
 				}
 			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -1139,7 +855,6 @@ describe('complexFilter', function() {
 					"sid": "ci2005-11-22-3"
 				}
 			]
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -1189,7 +904,6 @@ describe('complexFilter', function() {
 	describe.skip('handling exceptions', function() {
 		it('should skip if searchFor fields is not found', function() {
 			const expected = []
-			const objects = require(objectsFilename)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -1199,7 +913,8 @@ describe('complexFilter', function() {
 					"searchType": "exact"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist.match('^Davi O')"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should understand nested fields', function() {
@@ -1220,7 +935,12 @@ describe('complexFilter', function() {
 					}
 				}
 			]
+			const objectStream = Readable({objectMode: true})
 			const objects = require(nestedObjectsFilename)
+			objects.map((object) => {
+				objectStream.push(object)
+			})
+			objectStream.push(null)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -1230,7 +950,8 @@ describe('complexFilter', function() {
 					"searchType": "exact"
 				}
 			]
-			const results = objects.filter(complexFilter(queryStack))
+			const expected = "item.microscopist.match('^Davi O')"
+			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should throw error if rules are bad', function() {

@@ -1,28 +1,15 @@
 'use strict'
 
+const buildFilter = require('./buildFilter')
 
 // const filterType = require('./filterType')
-
-
-const buildFilter = (query) => {
-    switch (query) {
-        case 'filter':
-            return 'true'
-    }
-}
  
 const makeFilter = (queryStack) => {
-    let test = '*'
-    queryStack.map((query) => {
-        const f = buildFilter(query)
-        test += f
-    })
-    // console.log(test)
+    const testString = buildFilter(queryStack)
     return (item) => {
-        return (eval(test))
+        return (eval(testString))
     }
 }
-
 
 module.exports = (queryStack) => {
     return makeFilter(queryStack)

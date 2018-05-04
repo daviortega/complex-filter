@@ -1,9 +1,11 @@
 'use strict'
 
-module.exports = (queryStack) => {
+const buildFilter = (queryStack, association = '&&') => {
 	let testString = ''
 	let limits = []
-	queryStack.map((query) => {
+	queryStack.map((query, i) => {
+		if (i !== 0)
+			testString += ` ${association} `
 		if (query.searchType === 'between')
 			limits = query.searchFor.split(';').map(parseFloat)
 		switch (query.type) {
@@ -46,7 +48,19 @@ module.exports = (queryStack) => {
 						break
 				}
 				break
+			case 'AND':
+				testString += buildFilter(query.args, '&&')
+				break
+			case 'OR':
+				testString += buildFilter(query.args, '||')
+				break
 		}
+		if (query.not)
+			testString = `!(${testString})`
 	})
+	if (queryStack.length > 1)
+		testString = `(${testString})`
 	return testString
 }
+
+module.exports = buildFilter

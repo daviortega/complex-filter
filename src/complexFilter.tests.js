@@ -398,7 +398,7 @@ describe('complexFilter', function() {
 			expect(results).eql(expected)
 		})
 	})
-	describe.skip('simple NOT queries', function() {
+	describe('simple NOT queries', function() {
 		it('transform of simple NOT query should work', function() {
 			const expected = [
 				{
@@ -438,16 +438,8 @@ describe('complexFilter', function() {
 					"searchType": "contains"
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-					.on('data', (chunk) => {
-						results.push(chunk)
-					})
-					.on('finish', () => {
-						expect(results).eql(expected)
-					})
+			const results = objects.filter(complexFilter(queryStack))
+			expect(results).eql(expected)
 		})
 		it('transform of simple with NOT omitted query should work', function() {
 			const expected = [
@@ -483,16 +475,8 @@ describe('complexFilter', function() {
 					"searchType": "contains"
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-					.on('data', (chunk) => {
-						results.push(chunk)
-					})
-					.on('finish', () => {
-						expect(results).eql(expected)
-					})
+			const results = objects.filter(complexFilter(queryStack))
+			expect(results).eql(expected)
 		})
 		it('should match different with NOT and "exactValue" with numbers', function() {
 			const expected = [
@@ -719,7 +703,7 @@ describe('complexFilter', function() {
 			expect(results).eql(expected)
 		})
 	})
-	describe.skip('AND and OR simple associations', function() {
+	describe('AND and OR simple associations', function() {
 		it('transform of two AND queries should work', function() {
 			const expected = [
 				{
@@ -770,16 +754,8 @@ describe('complexFilter', function() {
 					"searchType": "contains"
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-				.on('data', (chunk) => {
-					results.push(chunk)
-				})
-				.on('finish', () => {
-					expect(results).eql(expected)
-				})
+			const results = objects.filter(complexFilter(queryStack))
+			expect(results).eql(expected)
 		})
 		it('transform of two OR queries should work', function() {
 			const expected = [
@@ -836,19 +812,11 @@ describe('complexFilter', function() {
 					]
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-				.on('data', (chunk) => {
-					results.push(chunk)
-				})
-				.on('finish', () => {
-					expect(results).eql(expected)
-				})
+			const results = objects.filter(complexFilter(queryStack))
+			expect(results).eql(expected)
 		})
 	})
-	describe.skip('AND and OR complex associations', function() {
+	describe('AND and OR complex associations', function() {
 		it('transform of AND + OR queries should work', function() {
 			const expected = [
 				{
@@ -910,16 +878,8 @@ describe('complexFilter', function() {
 					]
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-				.on('data', (chunk) => {
-					results.push(chunk)
-				})
-				.on('finish', () => {
-					expect(results).eql(expected)
-				})
+			const results = objects.filter(complexFilter(queryStack))
+			expect(results).eql(expected)
 		})
 		it('another transform of AND + OR queries should work', function() {
 			const expected = [
@@ -1004,16 +964,8 @@ describe('complexFilter', function() {
 					]
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-				.on('data', (chunk) => {
-					results.push(chunk)
-				})
-				.on('finish', () => {
-					expect(results).eql(expected)
-				})
+			const results = objects.filter(complexFilter(queryStack))
+			expect(results).eql(expected)
 		})
 		it('one more transform of AND + OR queries should work', function() {
 			const expected = [
@@ -1065,16 +1017,8 @@ describe('complexFilter', function() {
 					"searchType": "exact"
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-				.on('data', (chunk) => {
-					results.push(chunk)
-				})
-				.on('finish', () => {
-					expect(results).eql(expected)
-				})
+			const results = objects.filter(complexFilter(queryStack))
+			expect(results).eql(expected)
 		})
 		it('transform of nested AND + OR + AND queries should work', function() {
 			const expected = [
@@ -1174,19 +1118,11 @@ describe('complexFilter', function() {
 					]
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-				.on('data', (chunk) => {
-					results.push(chunk)
-				})
-				.on('finish', () => {
-					expect(results).eql(expected)
-				})
+			const results = objects.filter(complexFilter(queryStack))
+			expect(results).eql(expected)
 		})
 	})
-	describe.skip('handling exceptions', function() {
+	describe('handling exceptions', function() {
 		it('should skip if searchFor fields is not found', function() {
 			const expected = []
 			const objects = require(objectsFilename)
@@ -1232,18 +1168,6 @@ describe('complexFilter', function() {
 			]
 			const results = objects.filter(complexFilter(queryStack))
 			expect(results).eql(expected)
-		})
-		it('should throw error if rules are bad', function() {
-			const badQueryStack = [ 
-				{ 
-					type: 'simple',
-					searchOn: 'microscopist',
-					searchType: 'contains',
-					searchFor: 'Gavin Murphy'
-				} 
-			]
-
-			expect( () => { complexFilterStream(badQueryStack) }).to.throw('Something is wrong with your queryStack')
 		})
 	})
 })

@@ -162,36 +162,8 @@ describe('buildFilter', function() {
 			expect(results).eql(expected)
 		})
 	})
-	describe.skip('simple NOT queries', function() {
+	describe('simple NOT queries', function() {
 		it('transform of simple NOT query should work', function() {
-			const expected = [
-				{
-					"date": 1237939200,
-					"NCBItaxID": 80880,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Davi Ortega",
-					"institution": "ETDB",
-					"lab": "Jensen Lab",
-					"sid": "am2009-03-25-16"
-				},
-				{
-					"date": 1132617600,
-					"NCBItaxID": 80880,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
-					"speciesName": "Halothiobacillus neapolitanus",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -11,
-					"dosage": 190,
-					"tiltConstant": 1,
-					"microscopist": "Matt Swulius",
-					"institution": "Penn State",
-					"lab": "Swulius Lab",
-					"sid": "ci2005-11-22-3"
-				}
-			]
 			const queryStack = [
 				{
 					"type": "filter",
@@ -201,42 +173,11 @@ describe('buildFilter', function() {
 					"searchType": "contains"
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-					.on('data', (chunk) => {
-						results.push(chunk)
-					})
-					.on('finish', () => {
-						expect(results).eql(expected)
-					})
+			const expected = "!(item.institution.match('Caltech'))"
+			const results = buildFilter(queryStack)
+			expect(results).eql(expected)
 		})
 		it('transform of simple with NOT omitted query should work', function() {
-			const expected = [
-				{
-					"date": 1245196800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2009-06-17-10"
-				},
-				{
-					"date": 1308268800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2011-06-17-1"
-				}
-			]
 			const queryStack = [
 				{
 					"type": "filter",
@@ -245,89 +186,11 @@ describe('buildFilter', function() {
 					"searchType": "contains"
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-					.on('data', (chunk) => {
-						results.push(chunk)
-					})
-					.on('finish', () => {
-						expect(results).eql(expected)
-					})
+			const expected = "item.microscopist.match('Alasdair McDowall')"
+			const results = buildFilter(queryStack)
+			expect(results).eql(expected)
 		})
 		it('should match different with NOT and "exactValue" with numbers', function() {
-			const expected = [
-				{
-					"date": 1180569600,
-					"NCBItaxID": 1076,
-					"artNotes": "Tilt series notes: Fe-metabolizing bacterium that makes parallel membrane sheets for photosynthesis.  Membrane topology is the primary interest.\r\nKeywords: photosynthetic membrane sheets, parallel membranes\n",
-					"speciesName": "Rhodopseudomonas palustris",
-					"tiltSingleDual": 1,
-					"defocus": -10,
-					"dosage": 200,
-					"tiltConstant": 1,
-					"tiltMin": -65,
-					"tiltMax": 65,
-					"tiltStep": 1,
-					"microscopist": "Bill Tivol",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "bt2007-05-31-2"
-				   },
-				   {
-					"date": 1245196800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2009-06-17-10"
-				   },
-				   {
-					"date": 1308268800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2011-06-17-1"
-				   },
-				   {
-					"date": 1132617600,
-					"NCBItaxID": 8080,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
-					"speciesName": "Halothiobacillus neapolitanus",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -11,
-					"dosage": 190,
-					"tiltConstant": 1,
-					"microscopist": "Matt Swulius",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "ci2005-11-22-3"
-				   },
-				   {
-					"date": 1132617600,
-					"NCBItaxID": 90880,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
-					"speciesName": "Pseudomonas aeruginosa",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -11,
-					"dosage": 190,
-					"tiltConstant": 1,
-					"microscopist": "Ariane Briegel",
-					"institution": "Caltech",
-					"lab": "Briegel Lab",
-					"sid": "ci2005-11-22-3"
-				   }
-			]
 			const queryStack = [
 				{
 					"type": "filter",
@@ -337,7 +200,7 @@ describe('buildFilter', function() {
 					"searchType": "exactValue"
 				}
 			]
-			const expected = "item.microscopist.match('^Davi O')"
+			const expected = "!(item.NCBItaxID === 80880)"
 			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
@@ -351,28 +214,11 @@ describe('buildFilter', function() {
 					"searchType": "greaterThan"
 				}
 			]
-			const expected = "item.microscopist.match('^Davi O')"
+			const expected = "!(item.NCBItaxID > 1076)"
 			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match larger or equal values with NOT and "lessThan', function() {
-			const expected = [
-				{
-					"date": 1132617600,
-					"NCBItaxID": 90880,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
-					"speciesName": "Pseudomonas aeruginosa",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -11,
-					"dosage": 190,
-					"tiltConstant": 1,
-					"microscopist": "Ariane Briegel",
-					"institution": "Caltech",
-					"lab": "Briegel Lab",
-					"sid": "ci2005-11-22-3"
-				}
-			]
 			const queryStack = [
 				{
 					"type": "filter",
@@ -382,50 +228,11 @@ describe('buildFilter', function() {
 					"searchType": "lessThan"
 				}
 			]
-			const expected = "item.microscopist.match('^Davi O')"
+			const expected = "!(item.NCBItaxID < 90880)"
 			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 		it('should match values not included between two values passed as "between"', function() {
-			const expected = [
-				{
-					"date": 1245196800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2009-06-17-10"
-				},
-				{
-					"date": 1308268800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2011-06-17-1"
-				},
-				{
-					"date": 1132617600,
-					"NCBItaxID": 90880,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
-					"speciesName": "Pseudomonas aeruginosa",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -11,
-					"dosage": 190,
-					"tiltConstant": 1,
-					"microscopist": "Ariane Briegel",
-					"institution": "Caltech",
-					"lab": "Briegel Lab",
-					"sid": "ci2005-11-22-3"
-				}
-			]
 			const queryStack = [
 				{
 					"type": "filter",
@@ -435,45 +242,13 @@ describe('buildFilter', function() {
 					"searchType": "between"
 				}
 			]
-			const expected = "item.microscopist.match('^Davi O')"
+			const expected = "!(item.NCBItaxID > 197 && item.NCBItaxID < 90880)"
 			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
 	})
-	describe.skip('AND and OR simple associations', function() {
+	describe('AND and OR simple associations', function() {
 		it('transform of two AND queries should work', function() {
-			const expected = [
-				{
-					"date": 1132617600,
-					"NCBItaxID": 8080,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
-					"speciesName": "Halothiobacillus neapolitanus",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -11,
-					"dosage": 190,
-					"tiltConstant": 1,
-					"microscopist": "Matt Swulius",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "ci2005-11-22-3"
-				},
-				{
-					"date": 1132617600,
-					"NCBItaxID": 80880,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
-					"speciesName": "Halothiobacillus neapolitanus",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -11,
-					"dosage": 190,
-					"tiltConstant": 1,
-					"microscopist": "Matt Swulius",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "ci2005-11-22-3"
-				}
-			]
 			const queryStack = [
 				{
 					"type": "filter",
@@ -490,53 +265,11 @@ describe('buildFilter', function() {
 					"searchType": "contains"
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-				.on('data', (chunk) => {
-					results.push(chunk)
-				})
-				.on('finish', () => {
-					expect(results).eql(expected)
-				})
+			const expected = "(item.microscopist.match('Matt Swulius') && item.institution.match('Caltech'))"
+			const results = buildFilter(queryStack)
+			expect(results).eql(expected)
 		})
 		it('transform of two OR queries should work', function() {
-			const expected = [
-				{
-					"date": 1245196800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2009-06-17-10"
-				},
-				{
-					"date": 1308268800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2011-06-17-1"
-				},
-				{
-					"date": 1237939200,
-					"NCBItaxID": 80880,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Davi Ortega",
-					"institution": "ETDB",
-					"lab": "Jensen Lab",
-					"sid": "am2009-03-25-16"
-				}
-			]
 			const queryStack = [
 				{
 					"type": "OR",
@@ -555,55 +288,13 @@ describe('buildFilter', function() {
 					]
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-				.on('data', (chunk) => {
-					results.push(chunk)
-				})
-				.on('finish', () => {
-					expect(results).eql(expected)
-				})
+			const expected = "(item.microscopist === 'Davi Ortega' || item.microscopist === 'Alasdair McDowall')"
+			const results = buildFilter(queryStack)
+			expect(results).eql(expected)
 		})
 	})
-	describe.skip('AND and OR complex associations', function() {
+	describe('AND and OR complex associations', function() {
 		it('transform of AND + OR queries should work', function() {
-			const expected = [
-				{
-					"date": 1245196800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2009-06-17-10"
-				},
-				{
-					"date": 1308268800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2011-06-17-1"
-				},
-				{
-					"date": 1237939200,
-					"NCBItaxID": 80880,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Davi Ortega",
-					"institution": "ETDB",
-					"lab": "Jensen Lab",
-					"sid": "am2009-03-25-16"
-				}
-			]
 			const queryStack = [
 				{
 					"type": "filter",
@@ -628,70 +319,11 @@ describe('buildFilter', function() {
 					]
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-				.on('data', (chunk) => {
-					results.push(chunk)
-				})
-				.on('finish', () => {
-					expect(results).eql(expected)
-				})
+			const expected = "(item.speciesName === 'Campylobacter jejuni' && (item.microscopist === 'Davi Ortega' || item.microscopist === 'Alasdair McDowall'))"
+			const results = buildFilter(queryStack)
+			expect(results).eql(expected)
 		})
 		it('another transform of AND + OR queries should work', function() {
-			const expected = [
-				{
-					"date": 1245196800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2009-06-17-10"
-				},
-				{
-					"date": 1308268800,
-					"NCBItaxID": 197,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Alasdair McDowall",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "am2011-06-17-1"
-				},
-				{
-					"date": 1180483200,
-					"NCBItaxID": 80880,
-					"artNotes": "Tilt series notes: Fe-metabolizing bacterium that makes parallel membrane sheets for photosynthesis.  Membrane topology is the primary interest.\r\nKeywords: photosynthetic membrane sheets, parallel membranes\n",
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"defocus": -10,
-					"dosage": 200,
-					"tiltConstant": 1,
-					"tiltMin": -65,
-					"tiltMax": 65,
-					"tiltStep": 1,
-					"microscopist": "Gavin Murphy",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "bt2007-05-30-1"
-				},
-				{
-					"date": 1237939200,
-					"NCBItaxID": 80880,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Davi Ortega",
-					"institution": "ETDB",
-					"lab": "Jensen Lab",
-					"sid": "am2009-03-25-16"
-				}
-			]
 			const queryStack = [
 				{
 					"type": "filter",
@@ -721,31 +353,11 @@ describe('buildFilter', function() {
 					]
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-				.on('data', (chunk) => {
-					results.push(chunk)
-				})
-				.on('finish', () => {
-					expect(results).eql(expected)
-				})
+			const expected = "(item.speciesName === 'Campylobacter jejuni' && (item.microscopist === 'Davi Ortega' || item.microscopist === 'Alasdair McDowall' || item.microscopist === 'Gavin Murphy'))"
+			const results = buildFilter(queryStack)
+			expect(results).eql(expected)
 		})
 		it('one more transform of AND + OR queries should work', function() {
-			const expected = [
-				{
-					"date": 1237939200,
-					"NCBItaxID": 80880,
-					"speciesName": "Campylobacter jejuni",
-					"tiltSingleDual": 1,
-					"tiltConstant": 1,
-					"microscopist": "Davi Ortega",
-					"institution": "ETDB",
-					"lab": "Jensen Lab",
-					"sid": "am2009-03-25-16"
-				}
-			]
 			const queryStack = [
 				{
 					"type": "filter",
@@ -781,80 +393,11 @@ describe('buildFilter', function() {
 					"searchType": "exact"
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-				.on('data', (chunk) => {
-					results.push(chunk)
-				})
-				.on('finish', () => {
-					expect(results).eql(expected)
-				})
+			const expected = "(item.speciesName === 'Campylobacter jejuni' && (item.microscopist === 'Davi Ortega' || item.microscopist === 'Alasdair McDowall' || item.microscopist === 'Gavin Murphy') && item.institution === 'ETDB')"
+			const results = buildFilter(queryStack)
+			expect(results).eql(expected)
 		})
 		it('transform of nested AND + OR + AND queries should work', function() {
-			const expected = [
-				{
-					"date": 1132617600,
-					"NCBItaxID": 80880,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h1 in normal conditions\r\nKeywords: carboxysomes, internal granules, partial carboxysomes, irregular carboxysome\n",
-					"speciesName": "Halothiobacillus neapolitanus",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -12,
-					"dosage": 150,
-					"tiltConstant": 1,
-					"microscopist": "Cristina Iancu",
-					"institution": "notCaltech",
-					"lab": "Jensen Lab",
-					"sid": "ci2005-11-22-1"
-				   },
-				   {
-					"date": 1132617600,
-					"NCBItaxID": 80880,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h1 in normal conditions\r\nKeywords: carboxysomes, internal granules, partial carboxysomes, irregular carboxysome\n",
-					"speciesName": "Halothiobacillus neapolitanus",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -12,
-					"dosage": 150,
-					"tiltConstant": 1,
-					"microscopist": "Cristina Iancu",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "ci2005-11-22-1"
-				   },
-				   {
-					"date": 1132617600,
-					"NCBItaxID": 8080,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
-					"speciesName": "Halothiobacillus neapolitanus",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -11,
-					"dosage": 190,
-					"tiltConstant": 1,
-					"microscopist": "Matt Swulius",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "ci2005-11-22-3"
-				   },
-				   {
-					"date": 1132617600,
-					"NCBItaxID": 80880,
-					"artNotes": "Tilt series notes: H. neapolitanus cell h3 in normal conditions\r\nKeywords: carboxysomes, internal granules\n",
-					"speciesName": "Halothiobacillus neapolitanus",
-					"strain": "c2",
-					"tiltSingleDual": 1,
-					"defocus": -11,
-					"dosage": 190,
-					"tiltConstant": 1,
-					"microscopist": "Matt Swulius",
-					"institution": "Caltech",
-					"lab": "Jensen Lab",
-					"sid": "ci2005-11-22-3"
-				}
-			]
 			const queryStack = [
 				{
 					"type": "filter",
@@ -889,58 +432,13 @@ describe('buildFilter', function() {
 					]
 				}
 			]
-			const filterStream = complexFilterStream(queryStack)
-			const results = []
-			objectStream
-				.pipe(filterStream)
-				.on('data', (chunk) => {
-					results.push(chunk)
-				})
-				.on('finish', () => {
-					expect(results).eql(expected)
-				})
-		})
-	})
-	describe.skip('handling exceptions', function() {
-		it('should skip if searchFor fields is not found', function() {
-			const expected = []
-			const queryStack = [
-				{
-					"type": "filter",
-					"not": false,
-					"searchFor": "Davi Ortega",
-					"searchOn": "biologist",
-					"searchType": "exact"
-				}
-			]
-			const expected = "item.microscopist.match('^Davi O')"
+			const expected = "(item.speciesName === 'Halothiobacillus neapolitanus' && (item.microscopist === 'Cristina Iancu' || (item.microscopist === 'Matt Swulius' && item.lab === 'Jensen Lab')))"
 			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
 		})
+	})
+	describe('handling exceptions', function() {
 		it('should understand nested fields', function() {
-			const expected = [
-				{
-					"level1": {
-						"level2": {
-							"date": 1237939200,
-							"NCBItaxID": 80880,
-							"speciesName": "Campylobacter jejuni",
-							"tiltSingleDual": 1,
-							"tiltConstant": 1,
-							"microscopist": "Davi Ortega",
-							"institution": "ETDB",
-							"lab": "Jensen Lab",
-							"sid": "am2009-03-25-16"
-						}
-					}
-				}
-			]
-			const objectStream = Readable({objectMode: true})
-			const objects = require(nestedObjectsFilename)
-			objects.map((object) => {
-				objectStream.push(object)
-			})
-			objectStream.push(null)
 			const queryStack = [
 				{
 					"type": "filter",
@@ -950,21 +448,9 @@ describe('buildFilter', function() {
 					"searchType": "exact"
 				}
 			]
-			const expected = "item.microscopist.match('^Davi O')"
+			const expected = "item.level1.level2.microscopist === 'Davi Ortega'"
 			const results = buildFilter(queryStack)
 			expect(results).eql(expected)
-		})
-		it('should throw error if rules are bad', function() {
-			const badQueryStack = [ 
-				{ 
-					type: 'simple',
-					searchOn: 'microscopist',
-					searchType: 'contains',
-					searchFor: 'Gavin Murphy'
-				} 
-			]
-
-			expect( () => { complexFilterStream(badQueryStack) }).to.throw('Something is wrong with your queryStack')
 		})
 	})
 })
